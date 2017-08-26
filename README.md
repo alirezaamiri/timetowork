@@ -1,6 +1,9 @@
 TODO:
 
-1 Remove hello world!!! [gemacht]
+1 Remove hello world
+2 change an application name
+3 start timer and list the activities
+3 Add play/ stop buttons
 2 Add Good morning/evening/night to the lower header and variables
 3 Change the background of the main button :) like!
 4 Add a list to the main part of the screen for logs
