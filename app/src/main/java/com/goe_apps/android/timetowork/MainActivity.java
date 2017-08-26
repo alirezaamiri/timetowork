@@ -8,18 +8,26 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
-    boolean running;
-    MyTimer timer;
-    int theTime;
+    private boolean running;
+    private MyTimer timer;
+    private int theTime;
+    private RecyclerView logRecyclerView;
+    private RecyclerView.Adapter logAdapter;
+    private RecyclerView.LayoutManager logLayoutManager;
+    private ArrayList<Integer> logDataset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +36,12 @@ public class MainActivity extends AppCompatActivity
         running = false;
         timer= new MyTimer();
         theTime = 0;
+        logDataset = new ArrayList<Integer>();
+//        logDataset = new String[]{
+//                "olga",
+//                "alireza",
+//                "olga"
+//        };
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -38,6 +52,8 @@ public class MainActivity extends AppCompatActivity
                     running = false;
                     Snackbar.make(view, "Timer is stopped. the Time is: "+ theTime, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+                    logDataset.add(new Integer(theTime));
+                    logAdapter.notifyItemInserted(logDataset.size() - 1);
                 }else{
                     timer.start();
                     timer.sendEmptyMessage(0);
@@ -50,6 +66,15 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        logRecyclerView = (RecyclerView) findViewById(R.id.loglist);
+        logRecyclerView.setHasFixedSize(true);
+
+        logLayoutManager = new LinearLayoutManager(this);
+        logRecyclerView.setLayoutManager(logLayoutManager);
+
+        logAdapter = new LogListAdapter(logDataset);
+        logRecyclerView.setAdapter(logAdapter);
     }
 
     @Override
@@ -108,6 +133,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
     public static class MyTimer extends Handler
     {
